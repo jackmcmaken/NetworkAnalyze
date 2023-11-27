@@ -1,16 +1,21 @@
-import dearpygui.dearpygui as dpg
+from network.packet_analyzer import PacketAnalyzer
+from network.traffic_analyzer import TrafficAnalyzer
+from utils.data_parser import DataParser
+from utils.visualization import generate_network_graph
 
-dpg.create_context()
-dpg.create_viewport(title='Custom Title', width=900, height=900)
+# Load and parse network data
+data_parser = DataParser("network_capture.log")
+parsed_data = data_parser.parse()
 
-with dpg.window(label="Example Window", no_title_bar=True, no_resize=True, no_move=True):
-    dpg.add_text("Hello, world")
-    dpg.add_button(label="Save")
-    dpg.add_input_text(label="string", default_value="Quick brown fox")
-    dpg.add_slider_float(label="float", default_value=0.273, max_value=1)
+# Analyze packets
+packet_analyzer = PacketAnalyzer(parsed_data["packets"])
+packet_summary = packet_analyzer.analyze()
 
-dpg.set_primary_window("Example Window", True)
-dpg.setup_dearpygui()
-dpg.show_viewport(maximized=True)
-dpg.start_dearpygui()
-dpg.destroy_context()
+# Analyze traffic
+traffic_analyzer = TrafficAnalyzer(parsed_data["traffic"])
+traffic_stats = traffic_analyzer.analyze()
+
+# Visualize results
+generate_network_graph(packet_summary, traffic_stats)
+
+# Further analysis and reporting...

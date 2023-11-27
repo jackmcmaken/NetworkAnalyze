@@ -1,2 +1,2 @@
-import scapy as sc
+from scapy.all import *
 
